@@ -5,23 +5,22 @@ import fr.lernejo.logger.LoggerFactory;
 
 public class ComputerPlayer implements Player {
     private final Logger logger = LoggerFactory.getLogger("player");
-    private long min = 0;
-    private long max = 100;
-    private long lastGuess;
+    private long lowerBound = Long.MIN_VALUE;
+    private long upperBound = Long.MAX_VALUE;
 
     @Override
     public long askNextGuess() {
-        lastGuess = (min + max) / 2;
-        logger.log("Computer guesses: " + lastGuess);
-        return lastGuess;
+        long guess = (lowerBound + upperBound) / 2;
+        logger.log("Computer guesses: " + guess);
+        return guess;
     }
 
     @Override
     public void respond(boolean lowerOrGreater) {
         if (lowerOrGreater) {
-            max = lastGuess - 1;
+            lowerBound = (lowerBound + upperBound) / 2 + 1;
         } else {
-            min = lastGuess + 1;
+            upperBound = (lowerBound + upperBound) / 2 - 1;
         }
     }
 }

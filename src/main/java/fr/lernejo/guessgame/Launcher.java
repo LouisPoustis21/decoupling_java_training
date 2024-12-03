@@ -1,45 +1,29 @@
 package fr.lernejo.guessgame;
 
-import fr.lernejo.logger.Logger;
-import fr.lernejo.logger.LoggerFactory;
-
 import java.security.SecureRandom;
 
 public class Launcher {
-
     public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger("Launcher");
-
-        if (args.length < 1) {
-            logger.log("Usage:");
-            logger.log(" -interactive: Play interactively with a human player.");
-            logger.log(" -auto <number>: Play automatically with the computer player, guessing the given number.");
-            return;
-        }
-
-        if ("-interactive".equals(args[0])) {
-            logger.log("Launching interactive mode...");
+        if (args.length > 0 && args[0].equals("-interactive")) {
             HumanPlayer humanPlayer = new HumanPlayer();
             Simulation simulation = new Simulation(humanPlayer);
-            SecureRandom random = new SecureRandom();
-            long randomNumber = random.nextInt(100); 
+            long randomNumber = new SecureRandom().nextInt(100);
             simulation.initialize(randomNumber);
-            simulation.loopUntilPlayerSucceed(Long.MAX_VALUE); 
-        } else if ("-auto".equals(args[0]) && args.length == 2) {
+            simulation.loopUntilPlayerSucceed(Long.MAX_VALUE);
+        } else if (args.length > 1 && args[0].equals("-auto")) {
             try {
                 long targetNumber = Long.parseLong(args[1]);
-                logger.log("Launching auto mode...");
                 ComputerPlayer computerPlayer = new ComputerPlayer();
                 Simulation simulation = new Simulation(computerPlayer);
                 simulation.initialize(targetNumber);
-                simulation.loopUntilPlayerSucceed(1000); 
+                simulation.loopUntilPlayerSucceed(1000);
             } catch (NumberFormatException e) {
-                logger.log("Invalid number format for the target number.");
+                System.out.println("Invalid number format for auto mode.");
             }
         } else {
-            logger.log("Invalid arguments. Usage:");
-            logger.log(" -interactive: Play interactively with a human player.");
-            logger.log(" -auto <number>: Play automatically with the computer player, guessing the given number.");
+            System.out.println("Usage:");
+            System.out.println("  -interactive : Play the game manually.");
+            System.out.println("  -auto <number> : Let the computer guess the given number.");
         }
     }
 }

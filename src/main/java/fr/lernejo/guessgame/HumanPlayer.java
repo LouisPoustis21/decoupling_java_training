@@ -11,16 +11,16 @@ public class HumanPlayer implements Player {
 
     @Override
     public long askNextGuess() {
-        logger.log("Enter your next guess: ");
+        logger.log("Please enter your guess: ");
         return scanner.nextLong();
     }
 
     @Override
     public void respond(boolean lowerOrGreater) {
         if (lowerOrGreater) {
-            logger.log("petit");
+            logger.log("The number is higher.");
         } else {
-            logger.log("grand");
+            logger.log("The number is lower.");
         }
     }
 }

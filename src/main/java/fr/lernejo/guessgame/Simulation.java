@@ -4,8 +4,7 @@ import fr.lernejo.logger.Logger;
 import fr.lernejo.logger.LoggerFactory;
 
 public class Simulation {
-
-    private final Logger logger = LoggerFactory.getLogger("Simulation");
+    private final Logger logger = LoggerFactory.getLogger("simulation");
     private final Player player;
     private long numberToGuess;
 
@@ -17,43 +16,37 @@ public class Simulation {
         this.numberToGuess = numberToGuess;
     }
 
+    /**
+     * @return true if the player guessed the correct number.
+     */
     private boolean nextRound() {
         long guess = player.askNextGuess();
         if (guess == numberToGuess) {
             logger.log("Correct! The number was " + numberToGuess);
             return true;
-        } else if (guess < numberToGuess) {
-            logger.log("The number is higher than " + guess);
-            player.respond(true);
         } else {
-            logger.log("The number is lower than " + guess);
-            player.respond(false);
+            boolean lowerOrGreater = guess < numberToGuess;
+            player.respond(lowerOrGreater);
+            return false;
         }
-        return false;
     }
 
     public void loopUntilPlayerSucceed(long maxIterations) {
         long startTime = System.currentTimeMillis();
-        int iterations = 0;
-
-        while (iterations < maxIterations) {
-            iterations++;
+        for (long i = 0; i < maxIterations; i++) {
             if (nextRound()) {
-                long endTime = System.currentTimeMillis();
-                logger.log("You won in " + iterations + " rounds!");
-                logger.log("Time taken: " + formatTime(endTime - startTime));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                logger.log("You won! Time taken: " + formatElapsedTime(elapsedTime));
                 return;
             }
         }
-
-        long endTime = System.currentTimeMillis();
-        logger.log("You lost. Maximum iterations reached (" + maxIterations + ").");
-        logger.log("Time taken: " + formatTime(endTime - startTime));
+        logger.log("Game over! You ran out of attempts.");
     }
 
-    private String formatTime(long milliseconds) {
-        long seconds = (milliseconds / 1000) % 60;
-        long minutes = (milliseconds / (1000 * 60)) % 60;
+    private String formatElapsedTime(long milliseconds) {
+        long seconds = milliseconds / 1000;
+        long minutes = seconds / 60;
+        seconds = seconds % 60;
         long millis = milliseconds % 1000;
         return String.format("%02d:%02d.%03d", minutes, seconds, millis);
     }

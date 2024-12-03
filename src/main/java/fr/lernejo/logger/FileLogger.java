@@ -1,18 +1,21 @@
-import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE;
+package fr.lernejo.logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
+
 public class FileLogger implements Logger {
     private final Path path;
 
     public FileLogger(String pathAsString) {
-        path = Paths.get(pathAsString).toAbsolutePath();
+        this.path = Paths.get(pathAsString).toAbsolutePath();
     }
 
+    @Override
     public void log(String message) {
         try {
             Files.write(path, (message + "\n").getBytes(), APPEND, CREATE);
@@ -21,3 +24,4 @@ public class FileLogger implements Logger {
         }
     }
 }
+
