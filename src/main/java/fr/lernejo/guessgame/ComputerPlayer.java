@@ -5,12 +5,12 @@ import fr.lernejo.logger.LoggerFactory;
 
 public class ComputerPlayer implements Player {
     private final Logger logger = LoggerFactory.getLogger("player");
-    private long lowerBound = Long.MIN_VALUE;
-    private long upperBound = Long.MAX_VALUE;
+    private long min = Long.MIN_VALUE;
+    private long max = Long.MAX_VALUE;
 
     @Override
     public long askNextGuess() {
-        long guess = lowerBound + (upperBound - lowerBound) / 2;
+        long guess = (min + max) / 2;
         logger.log("Computer guesses: " + guess);
         return guess;
     }
@@ -18,9 +18,11 @@ public class ComputerPlayer implements Player {
     @Override
     public void respond(boolean lowerOrGreater) {
         if (lowerOrGreater) {
-            upperBound = lowerBound + (upperBound - lowerBound) / 2;
+            max = (min + max) / 2 - 1;
+            logger.log("The guess was too high. Adjusting range to [" + min + ", " + max + "]");
         } else {
-            lowerBound = lowerBound + (upperBound - lowerBound) / 2 + 1;
+            min = (min + max) / 2 + 1;
+            logger.log("The guess was too low. Adjusting range to [" + min + ", " + max + "]");
         }
     }
 }

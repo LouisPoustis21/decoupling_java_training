@@ -15,45 +15,35 @@ public class Simulation {
     public void initialize(long numberToGuess) {
         this.numberToGuess = numberToGuess;
     }
+
     private boolean nextRound() {
         long guess = player.askNextGuess();
         if (guess == numberToGuess) {
-            logger.log("Congratulations! You guessed the number!");
+            logger.log("Correct! The number was " + numberToGuess);
             return true;
-        } else if (guess > numberToGuess) {
-            player.respond(true); 
         } else {
-            player.respond(false); 
+            boolean isLower = guess > numberToGuess;
+            player.respond(isLower);
+            return false;
         }
-        return false;
     }
 
     public void loopUntilPlayerSucceed(long maxIterations) {
-    long startTime = System.currentTimeMillis();
-    boolean success = false;
-    long iterations = 0;
+        long startTime = System.currentTimeMillis();
+        boolean success = false;
 
-    while (iterations < maxIterations) {
-        iterations++;
-        if (nextRound()) {
-            success = true;
-            break;
+        for (long i = 0; i < maxIterations && !success; i++) {
+            success = nextRound();
         }
-    }
 
-    long endTime = System.currentTimeMillis();
-    long durationMillis = endTime - startTime;
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
 
-    long minutes = (durationMillis / 1000) / 60;
-    long seconds = (durationMillis / 1000) % 60;
-    long milliseconds = durationMillis % 1000;
-
-    logger.log(String.format("Game finished in %d iterations and %02d:%02d.%03d",
-        iterations, minutes, seconds, milliseconds));
-    if (success) {
-        logger.log("win");
-    } else {
-        logger.log("perdue trop de temps");
+        if (success) {
+            logger.log("You won! Game duration: " + (duration / 1000) + "s " + (duration % 1000) + "ms");
+        } else {
+            logger.log("loose! You did not guess the number within " + maxIterations + " attempts.");
+        }
     }
 }
 
